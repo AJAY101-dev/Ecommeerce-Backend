@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Your Service</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f8b9b9; }
+    .email-container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; }
+    .email-header { text-align: center; background-color: #4CAF50; color: white; padding: 10px; border-radius: 10px 10px 0 0; }
+    .email-body { padding: 20px; }
+    .email-body h1 { color: #333; }
+    .email-body p { font-size: 16px; color: #555; }
+    .email-footer { text-align: center; margin-top: 20px; font-size: 14px; color: #777; }
+    .btn { display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+    .btn:hover { background-color: #45a049; }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="email-header">
+      <h2>Welcome to KMIT family </h2>
+    </div>
+    <div class="email-body">
+      <h1>Hi {{username}},</h1>
+      <p>Thank you for subscribing to Your Service! We're excited to have you on board.</p>
+      <p>Your subscription is now active. You can start using all the features right away!</p>
+      <p>If you have any questions, feel free to <a href="mailto:support@yourservice.com">contact our support team</a>.</p>
+      <p>Click the button below to get started:</p>
+      
+    </div>
+    <div class="email-footer">
+      <p>If you did not subscribe, please ignore this email.</p>
+      <p>© 2025 Your Service. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
