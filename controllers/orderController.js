@@ -11,7 +11,7 @@ const router = express.Router();
 
 
 router.get("/get",   authenticateMiddleware ,userRoleMiddleware, orderServices.getOrder);
-router.post("/post",  authenticateMiddleware ,userRoleMiddleware, orderServices.createOrder);
+router.post("/post",  authenticateMiddleware , orderServices.createOrder);
 router.patch("/:id",  authenticateMiddleware ,userRoleMiddleware, orderServices.updateOrder);
 router.delete("/:id",  authenticateMiddleware ,userRoleMiddleware, orderServices.deleteOrder);
 

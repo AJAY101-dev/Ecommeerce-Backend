@@ -4,31 +4,36 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,  
+      // required: true,  
     },
     email: {
       type: String,
-      required: true,
+      // required: true,
       unique: true,  // Ensures the email is unique
       match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address'],  
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
       minlength: [6, 'Password must be at least 6 characters long'],  
     },
     role: {
       type: String , enum: ['admin', 'user', 'manager'],
-      defaultValue: 'user',
+      default: 'user',
     },
     phoneNumber: {
-      type: Number,
-      required: true,  
+      type: String,
+      // required: true,  
     },
     profileImage: {
       type: String, 
       default: null,  
     },
+
+
+    customerId:{type:String},
+    isSubscribed:{type :Boolean, default:false},
+
     createdAt: {
       type: Date,
       default: Date.now,  

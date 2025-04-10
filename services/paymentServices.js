@@ -6,13 +6,14 @@ const stripe = new Stripe(
 
 const paymentService = async (req, res) => {
   try {
-    const { name, email, token, amount, currency, payment_method_types } =
-      req.body;
+    const customerId = req.customerId;
+    // console.log(customerId)
+    const { token, amount, currency, payment_method_types } = req.body;
     let chargeToken = token || null;
-    const customer = await stripe.customers.create({
-      name: name,
-      email: email,
-    });
+    // const customer = await stripe.customers.create({
+    //   name: name,
+    //   email: email,
+    // });
     let paymentMethods = [];
     if (payment_method_types === "card") {
       paymentMethods = ["card"];
@@ -27,7 +28,7 @@ const paymentService = async (req, res) => {
     }
     if (chargeToken !== null) {
       const customerSource = await stripe.customers.paymentMethods(
-        customer.id,
+        customerId,
         {
           source: token,
         }
@@ -49,7 +50,7 @@ const paymentService = async (req, res) => {
         amount: amount * 100,
         currency: currency || "INR",
         payment_method_types: paymentMethods,
-        customer: customer.id,
+        customer: customerId,
       });
       const paymentMethod = await stripe.paymentMethods.create({
         type: "card",
@@ -58,9 +59,9 @@ const paymentService = async (req, res) => {
         },
       });
       await stripe.paymentMethods.attach(paymentMethod.id, {
-        customer: customer.id,
+        customer: customerId,
       });
-      await stripe.customers.update(customer.id, {
+      await stripe.customers.update(customerId, {
         invoice_settings: {
           default_payment_method: paymentMethod.id,
         },
@@ -98,3 +99,17 @@ const paymentDelete = async (req, res) => {
   await stripe.customers.del(id);
 };
 module.exports = { paymentService, paymentDelete };
+
+
+// {
+//   "amount":"100000",
+//   "currency":"INR",
+//   "payment_method_types":"card"
+// }
+
+
+
+
+
+
+

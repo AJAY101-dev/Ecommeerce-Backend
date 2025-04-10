@@ -2,13 +2,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const env = require("dotenv")
 
-const systemRoutes = require("./routes/systemRoutes")
+const systemRoutes = require("./routes/systemRoutes");
+const webHookController = require("./controllers/webHookController");
 
 const app = express();
 env.config();
 app.use(express.static('uploads'));
 
-
+app.use("/webhook", express.raw({ type: "application/json" }), webHookController );
 app.use(express.json());
 app.use("/",systemRoutes)
 const mongoDb = async () =>
@@ -24,7 +25,7 @@ const mongoDb = async () =>
 
 mongoDb()
   .then(() => {
-    const port = 3005;
+    const port = 3009;
     app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`);
     });

@@ -6,6 +6,12 @@ const secretKey = 'abcde12345';
 
  
 
+const Stripe = require("stripe");
+
+const stripe = new Stripe(
+  "sk_test_51R8hoxPQWvRuig7xWD2lkLfeqdbIkvFf50t09p1vY79FrPF3aTje1hHFdiQkDmfKE8dMmO90VoP28OMFczV9QizZ00oCRxwLRe"
+);
+
 
 const bcrypt = require("bcryptjs");
 const { sendMailNow } = require("./emailServices");
@@ -28,8 +34,13 @@ const createEmployee = async (req, res) => {
     console.log(" come on after hashing done ");
 
     const employeeData = req.body;
-
-    const newEmployee = await  Employee.create(employeeData);
+    const customer = await stripe.customers.create({
+      name: req.body.name,
+      email: req.body.email,
+    });
+employeeData.customerId= customer.id
+    
+    const newEmployee = await  Employee.create(employeeData );
 
 
     const userName = newEmployee.name;
@@ -52,11 +63,8 @@ const createEmployee = async (req, res) => {
   } catch (error) {
     res
       .status(400)
-      .json([
-        { statusCode: 400 },
-        console.log(error)
-        // { message: "Error while  creating new  employee", error },
-      ]);
+      .json({message:"Employee created successfully",data: newEmployee, // This will be the actual emple  creating new  employee", error },
+  });
   }
 };
 
@@ -105,7 +113,8 @@ const validLogin = async (req,res)=>
       id: loginEmail._id,
       username: email,
       role:loginEmail.role,
-    }, secretKey, { expiresIn: '2h' });
+      customerId:loginEmail.customerId,
+    }, secretKey, { expiresIn: '5h' });
     
     console.log("token is here ",token);
 
