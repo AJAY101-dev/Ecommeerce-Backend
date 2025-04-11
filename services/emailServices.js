@@ -5,11 +5,16 @@ const path = require("path");
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 
+
+const env = require("dotenv")
+require('dotenv').config();
+
+
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "breakstrust@gmail.com",
-    pass: "lunmtkyrkmortfdk",
+    user: process.env.EMAIL_USER,
+    pass: process.env.USER_EMAIL_PASS,
   },
 });
 
@@ -22,7 +27,7 @@ const sendMailNow = async (to, userName) => {
   // const { to, subject, text } = req.body;
 
   let mailOptions = {
-    from: "breakstrust@gmail.com",
+    from: process.env.EMAIL_USER,
     to: to,
     subject: " user created !!!!",
     html: personalizedHtml,
@@ -39,13 +44,13 @@ async function sendOtpEmail(userEmail, otp) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "breakstrust@gmail.com",
-      pass: "lunmtkyrkmortfdk",
+      user: process.env.EMAIL_USER,
+      pass: USER_EMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: "breakstrust@gmail.com",
+    from: process.env.EMAIL_USER,
     to: userEmail,
     subject: "Password Reset OTP",
     text: `Your OTP for password reset is: ${otp}`,
@@ -82,13 +87,13 @@ async function passwordChanged(userEmail,password) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "breakstrust@gmail.com",
-      pass: "lunmtkyrkmortfdk",
+      user: process.env.EMAIL_USER,
+      pass: USER_EMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: "breakstrust@gmail.com",
+    from: process.env.EMAIL_USER,
     to: userEmail,
     subject: "Password Reset successfully !!!!",
     text: `congratulations you updated your password . your new password is ${password}`,

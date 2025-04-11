@@ -3,9 +3,13 @@ const User = require("../models/userModel");
 
 const cron = require("node-cron")
 
+const env = require("dotenv")
+require('dotenv').config();
+
+
 const { trusted } = require("mongoose");
 const stripe = new Stripe(
-  "sk_test_51R8hoxPQWvRuig7xWD2lkLfeqdbIkvFf50t09p1vY79FrPF3aTje1hHFdiQkDmfKE8dMmO90VoP28OMFczV9QizZ00oCRxwLRe"
+  process.env.STRIPE_SK
 );
 const createSubscription = async (req, res) => {
   const { customerId, priceId } = req.body;

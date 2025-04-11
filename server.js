@@ -1,10 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const env = require("dotenv")
+require('dotenv').config();
 
 const systemRoutes = require("./routes/systemRoutes");
 const webHookController = require("./controllers/webHookController");
-
+console.log(process.env.EMAIL_PASS);
 const app = express();
 env.config();
 app.use(express.static('uploads'));
@@ -14,8 +15,9 @@ app.use(express.json());
 app.use("/",systemRoutes)
 const mongoDb = async () =>
   { 
+    // console.log(process.env.DATABASE)
      try {
-         await mongoose.connect('mongodb+srv://admin:admin123@cluster0.20mxo.mongodb.net/');
+         await mongoose.connect(process.env.DATABASE);
          console.log(" connection done ")
          
      } catch (error) {
@@ -25,7 +27,7 @@ const mongoDb = async () =>
 
 mongoDb()
   .then(() => {
-    const port = 3009;
+    const port = process.env.PORT;
     app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`);
     });

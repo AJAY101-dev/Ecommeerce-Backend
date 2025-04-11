@@ -1,15 +1,19 @@
 
 const Employee = require("../models/userModel");
 
+const env = require("dotenv")
+require('dotenv').config();
+
+
 const jwt = require('jsonwebtoken');
-const secretKey = 'abcde12345';
+const secretKey = process.env.JWT_SECRET_KEY;
 
  
 
 const Stripe = require("stripe");
 
 const stripe = new Stripe(
-  "sk_test_51R8hoxPQWvRuig7xWD2lkLfeqdbIkvFf50t09p1vY79FrPF3aTje1hHFdiQkDmfKE8dMmO90VoP28OMFczV9QizZ00oCRxwLRe"
+  process.env.STRIPE_SK
 );
 
 

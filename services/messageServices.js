@@ -4,12 +4,17 @@ const twilio = require("twilio");
 const app = express();
 app.use(express.json());
 
-const TWILIO_ACCOUNT_SID = "AC8c88773a876141cc416fc0985226b082";
-const TWILIO_AUTH_TOKEN = "c5918efb2fe029359708e62105c06eda";
-const TWILIO_PHONE_NUMBER = +"14782494546";
+const env = require("dotenv")
+require('dotenv').config();
+
+
+
+// const TWILIO_ACCOUNT_SID = "AC8c88773a876141cc416fc0985226b082";
+// const TWILIO_AUTH_TOKEN = "c5918efb2fe029359708e62105c06eda";
+// const TWILIO_PHONE_NUMBER = +"14782494546";
 
 // Initialize Twilio client
-const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 
 
@@ -25,7 +30,7 @@ const message = async (req, res) => {
   try {
     const sms = await client.messages.create({
       body: message,
-      from: TWILIO_PHONE_NUMBER,
+      from: process.env.TWILIO_PHONE_NUMBER,
       to: to,
     });
 

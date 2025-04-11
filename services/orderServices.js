@@ -5,11 +5,16 @@ const productModel = require("../models/productsModel");
 const { orderPaymentService } = require("./orderPaymentService");
 const orderMail = require("./orderEmail");
 
+const env = require("dotenv")
+require('dotenv').config();
+
+
+
 const twilio = require("twilio");
-const TWILIO_ACCOUNT_SID = "AC8c88773a876141cc416fc0985226b082";
-const TWILIO_AUTH_TOKEN = "c5918efb2fe029359708e62105c06eda";
-const TWILIO_PHONE_NUMBER = +"14782494546";
-const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+// const TWILIO_ACCOUNT_SID = "AC8c88773a876141cc416fc0985226b082";
+// const TWILIO_AUTH_TOKEN = "c5918efb2fe029359708e62105c06eda";
+// const TWILIO_PHONE_NUMBER = +"14782494546";
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 
 const createOrder = async (req, res) => {
@@ -51,7 +56,7 @@ const message = `Hello ${userId.name}, your order (ID: ${orderData.id}) has been
 await client.messages.create({
   body: message,
   to: "+919501686623", 
-  from: TWILIO_PHONE_NUMBER, r
+  from: process.env.TWILIO_PHONE_NUMBER, 
 });
 
 

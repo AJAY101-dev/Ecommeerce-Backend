@@ -1,18 +1,25 @@
 const Stripe = require("stripe");
 const User = require("../models/userModel");
 
+
+const env = require("dotenv")
+require('dotenv').config();
+
+
 const stripe = new Stripe(
-  "sk_test_51R8hoxPQWvRuig7xWD2lkLfeqdbIkvFf50t09p1vY79FrPF3aTje1hHFdiQkDmfKE8dMmO90VoP28OMFczV9QizZ00oCRxwLRe"
+  process.env.STRIPE_SK
 );
 
 const webHookSubscription = async (req, res) => {
     const sig = req.headers["stripe-signature"];
     try {
+      // console.log(req.body)
       const event = stripe.webhooks.constructEvent(
         req.body,
         sig,
-        "whsec_5ytZ4Q6XkigNbwnltO7rGHdURHIRfsFf"
+        process.env.WEBHOOK_SECRET_KEY
       );
+      // console.log(event)
       if (event.type === "customer.subscription.deleted") {
         const subscription = event.data.object;
         // console.log(subscription.customer)

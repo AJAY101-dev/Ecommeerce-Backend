@@ -1,6 +1,18 @@
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcryptjs")
+const csv =  require("csvtojson")
+const Stripe = require("stripe");
+const User = require("../models/userModel");
+
+const env = require("dotenv")
+require('dotenv').config();
+
+const stripe = new Stripe(
+  process.env.STRIPE_SK
+);
+
 // const url = require("url")
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -89,4 +101,71 @@ const deleteFile = (req,res) => {
   }
 };
 
-module.exports = { uploadFiles, deleteFile };
+
+
+const uploadFromCsvFile = async (req, res) => {
+  try {
+    const parentDir = path.resolve(__dirname, "..");
+    const uploadPath = path.join(parentDir, "uploads", "csv");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    const storage = multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, uploadPath);
+      },
+      filename: function (req, file, cb) {
+        cb(null, Date.now() + "-" + file.originalname);
+      },
+    });
+    const upload = multer({
+      storage,
+      limits: { fileSize: 10 * 1024 * 1024 },
+    }).single("file");
+    upload(req, res, async function (err) {
+      if (err) {
+        return res.status(400).json({ status: 400, message: err.message });
+      }
+      if (!req.file) {
+        return res.status(400).json({ status: 400, message: "No file uploaded" });
+      }
+      const filePath = req.file.path;
+      const jsonArray = await csv().fromFile(filePath);
+      const createdEmployees = [];
+      const failedEntries = [];
+      for (const data of jsonArray) {
+        try {
+          if (data.password) {
+            const salt = await bcrypt.genSalt(10);
+            data.password = await bcrypt.hash(data.password, salt);
+          }
+          const customer = await stripe.customers.create({
+            name: data.name,
+            email: data.email,
+          });
+          data.customerId = customer.id;
+          const createdEmployee = await User.create(data);
+          createdEmployees.push(createdEmployee);
+        } catch (err) {
+          failedEntries.push({
+            email: data.email,
+            reason: err.message,
+          });
+        }
+      }
+      res.status(201).json({
+        status: 201,
+        message: `${createdEmployees.length} employees created successfully.`,
+        created: createdEmployees,
+        failed: failedEntries,
+      });
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: error.message,
+    });
+  }
+};
+
+module.exports = { uploadFiles, deleteFile , uploadFromCsvFile};
